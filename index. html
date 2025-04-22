@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Video Upload | Podder Institute BD</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to bottom right, #f3f8ff, #dbeaff);
+      min-height: 100vh;
+    }
+
+    .upload-btn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #007bff;
+      color: white;
+      border: none;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      font-size: 32px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .upload-btn:hover {
+      background: #0056b3;
+    }
+
+    .upload-form {
+      display: none;
+      position: fixed;
+      bottom: 100px;
+      right: 20px;
+      background: #ffffffee;
+      padding: 20px;
+      border-radius: 16px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      width: 90%;
+      max-width: 350px;
+      backdrop-filter: blur(8px);
+      border: 1px solid #e0e0e0;
+    }
+
+    .upload-form h3 {
+      margin-top: 0;
+      text-align: center;
+      color: #333;
+    }
+
+    input, textarea, button {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 12px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+    }
+
+    textarea {
+      resize: none;
+    }
+
+    button {
+      background: #28a745;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background: #218838;
+    }
+
+    #result {
+      margin: 20px;
+      padding: 15px;
+      background: #ffffffcc;
+      border-left: 5px solid #28a745;
+      border-radius: 10px;
+      box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+    }
+
+    video {
+      width: 100%;
+      border-radius: 12px;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Upload Form -->
+<div class="upload-form" id="uploadForm">
+  <h3>Upload Video</h3>
+  <input type="file" id="videoFile" accept="video/*">
+  <input type="text" id="caption" placeholder="Video Caption">
+  <textarea id="description" rows="3" placeholder="Video Description"></textarea>
+  <button onclick="uploadVideo()">Upload</button>
+</div>
+
+<!-- Upload Button -->
+<button class="upload-btn" onclick="toggleForm()">+</button>
+
+<!-- Result Section -->
+<div id="result"></div>
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
+
+<script>
+  // Firebase Config (Replace with your actual Firebase config)
+  const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_PROJECT.firebaseapp.com",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_PROJECT.appspot.com",
+    messagingSenderId: "SENDER_ID",
+    appId: "APP_ID"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const storage = firebase.storage();
+
+  function toggleForm() {
+    const form = document.getElementById("uploadForm");
+    form.style.display = form.style.display === "none" ? "block" : "none";
+  }
+
+  function uploadVideo() {
+    const file = document.getElementById('videoFile').files[0];
+    const caption = document.getElementById('caption').value;
+    const description = document.getElementById('description').value;
+    const resultDiv = document.getElementById('result');
+
+    if (!file) return alert("Please choose a video file!");
+
+    const ref = storage.ref('videos/' + file.name);
+    const task = ref.put(file);
+
+    task.on('state_changed', null,
+      error => alert("Upload error: " + error.message),
+      () => {
+        task.snapshot.ref.getDownloadURL().then(url => {
+          resultDiv.innerHTML = `
+            <h4>Video Uploaded Successfully!</h4>
+            <video controls src="${url}"></video>
+            <p><strong>Caption:</strong> ${caption}</p>
+            <p><strong>Description:</strong> ${description}</p>
+            <a href="${url}" target="_blank">Download Link</a>
+          `;
+        });
+      }
+    );
+  }
+</script>
+
+</body>
+</html><!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Video Upload | Podder Institute BD</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to bottom right, #f3f8ff, #dbeaff);
+      min-height: 100vh;
+    }
+
+    .upload-btn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #007bff;
+      color: white;
+      border: none;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      font-size: 32px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .upload-btn:hover {
+      background: #0056b3;
+    }
+
+    .upload-form {
+      display: none;
+      position: fixed;
+      bottom: 100px;
+      right: 20px;
+      background: #ffffffee;
+      padding: 20px;
+      border-radius: 16px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      width: 90%;
+      max-width: 350px;
+      backdrop-filter: blur(8px);
+      border: 1px solid #e0e0e0;
+    }
+
+    .upload-form h3 {
+      margin-top: 0;
+      text-align: center;
+      color: #333;
+    }
+
+    input, textarea, button {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 12px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+    }
+
+    textarea {
+      resize: none;
+    }
+
+    button {
+      background: #28a745;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background: #218838;
+    }
+
+    #result {
+      margin: 20px;
+      padding: 15px;
+      background: #ffffffcc;
+      border-left: 5px solid #28a745;
+      border-radius: 10px;
+      box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+    }
+
+    video {
+      width: 100%;
+      border-radius: 12px;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Upload Form -->
+<div class="upload-form" id="uploadForm">
+  <h3>Upload Video</h3>
+  <input type="file" id="videoFile" accept="video/*">
+  <input type="text" id="caption" placeholder="Video Caption">
+  <textarea id="description" rows="3" placeholder="Video Description"></textarea>
+  <button onclick="uploadVideo()">Upload</button>
+</div>
+
+<!-- Upload Button -->
+<button class="upload-btn" onclick="toggleForm()">+</button>
+
+<!-- Result Section -->
+<div id="result"></div>
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
+
+<script>
+  // Firebase Config (Replace with your actual Firebase config)
+  const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_PROJECT.firebaseapp.com",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_PROJECT.appspot.com",
+    messagingSenderId: "SENDER_ID",
+    appId: "APP_ID"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const storage = firebase.storage();
+
+  function toggleForm() {
+    const form = document.getElementById("uploadForm");
+    form.style.display = form.style.display === "none" ? "block" : "none";
+  }
+
+  function uploadVideo() {
+    const file = document.getElementById('videoFile').files[0];
+    const caption = document.getElementById('caption').value;
+    const description = document.getElementById('description').value;
+    const resultDiv = document.getElementById('result');
+
+    if (!file) return alert("Please choose a video file!");
+
+    const ref = storage.ref('videos/' + file.name);
+    const task = ref.put(file);
+
+    task.on('state_changed', null,
+      error => alert("Upload error: " + error.message),
+      () => {
+        task.snapshot.ref.getDownloadURL().then(url => {
+          resultDiv.innerHTML = `
+            <h4>Video Uploaded Successfully!</h4>
+            <video controls src="${url}"></video>
+            <p><strong>Caption:</strong> ${caption}</p>
+            <p><strong>Description:</strong> ${description}</p>
+            <a href="${url}" target="_blank">Download Link</a>
+          `;
+        });
+      }
+    );
+  }
+</script>
+
+</body>
+</html>
